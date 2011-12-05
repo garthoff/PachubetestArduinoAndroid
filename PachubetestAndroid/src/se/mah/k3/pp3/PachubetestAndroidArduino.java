@@ -16,7 +16,7 @@ import android.widget.ToggleButton;
 
 public class PachubetestAndroidArduino extends Activity implements OnClickListener {
     /** Called when the activity is first created. */
-	private String API_KEY = "kPAKQZgxe_AaLdP93ddrt_7nP9Qs4l85gMcQJqhOOLw";
+	private String API_KEY = "YOUR KEY HERE";
 	private static int SHARE_FEED_ID = 40504;
 	private static int CONTROL_FEED_ID = 40525;   
 	private Random rand = new Random();
