@@ -114,7 +114,7 @@
                 android:id="@+id/linearLayout7"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content" >
-
+
                 <SeekBar
                     android:id="@+id/seekBar1"
                     android:layout_width="100dp"
@@ -132,7 +132,8 @@
                     android:layout_marginLeft="5dp"
                     android:layout_marginTop="5dp"
                     android:layout_weight="6.0"
-                    android:text="PWM 3 Value"
+                    android:text="PWM 3 not active"
+                    android:textColor="#ffffffff"
                     android:textAppearance="?android:attr/textAppearanceSmall" android:textStyle="bold"/>
 
             </LinearLayout>
@@ -158,8 +159,10 @@
                     android:layout_marginLeft="5dp"
                     android:layout_marginTop="5dp"
                     android:layout_weight="6.0"
-                    android:text="PWM 5 value"
-                    android:textAppearance="?android:attr/textAppearanceSmall" android:textStyle="bold"/>
+                    android:text="PWM 5 not active"                  
+                    android:textAppearance="?android:attr/textAppearanceSmall" 
+                    android:textColor="#ffffffff"
+                    android:textStyle="bold"/>
 
             </LinearLayout>
 
@@ -184,7 +187,8 @@
                     android:layout_marginLeft="5dp"
                     android:layout_marginTop="5dp"
                     android:layout_weight="6.0"
-                    android:text="PWM 6 value"
+                    android:text="PWM 6 not active"
+                    android:textColor="#ffffffff"
                     android:textAppearance="?android:attr/textAppearanceSmall" android:textStyle="bold"/>
 
             </LinearLayout>
@@ -211,7 +215,8 @@
                     android:layout_marginLeft="5dp"
                     android:layout_marginTop="5dp"
                     android:layout_weight="6.0"
-                    android:text="PWM 9 value"
+                    android:text="PWM 9 not active"
+                    android:textColor="#ffffffff"
                     android:textAppearance="?android:attr/textAppearanceSmall" android:textStyle="bold"/>
 
             </LinearLayout>
@@ -237,7 +242,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="top"
             android:layout_weight="1.0"
-            android:text="Small Text"
+            android:text="E"
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
     </TableRow>
