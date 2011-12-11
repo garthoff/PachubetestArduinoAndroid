@@ -23,7 +23,8 @@ import android.widget.ToggleButton;
 
 public class PachubetestAndroidArduino extends Activity implements OnClickListener, SeekBar.OnSeekBarChangeListener  {
     /** Called when the activity is first created. */
-	private String API_KEY = "Your own Api Pachube Key";
+	//private String API_KEY = "Your own Api Pachube Key";
+	private String API_KEY = "kPAKQZgxe_AaLdP93ddrt_7nP9Qs4l85gMcQJqhOOLw";
 	private static int SHARE_FEED_ID = 40504;
 	private static int CONTROL_FEED_ID = 40525;   
 	private Pachube p;
@@ -46,10 +47,14 @@ public class PachubetestAndroidArduino extends Activity implements OnClickListen
         findViewById(R.id.toggleButton8).setOnClickListener(this);
         findViewById(R.id.toggleButton9).setOnClickListener(this);
         //set seekbar listeners    
-        ((SeekBar)findViewById(R.id.seekBar1)).setOnSeekBarChangeListener(this);  
-        ((SeekBar)findViewById(R.id.seekBar2)).setOnSeekBarChangeListener(this);  
-        ((SeekBar)findViewById(R.id.seekBar3)).setOnSeekBarChangeListener(this);  
-        ((SeekBar)findViewById(R.id.seekBar4)).setOnSeekBarChangeListener(this);  
+        ((SeekBar)findViewById(R.id.seekBar1)).setOnSeekBarChangeListener(this);
+        ((SeekBar)findViewById(R.id.seekBar1)).setMax(255);
+        ((SeekBar)findViewById(R.id.seekBar2)).setOnSeekBarChangeListener(this); 
+        ((SeekBar)findViewById(R.id.seekBar2)).setMax(255);
+        ((SeekBar)findViewById(R.id.seekBar3)).setOnSeekBarChangeListener(this); 
+        ((SeekBar)findViewById(R.id.seekBar3)).setMax(255);
+        ((SeekBar)findViewById(R.id.seekBar4)).setOnSeekBarChangeListener(this);
+        ((SeekBar)findViewById(R.id.seekBar4)).setMax(255);
         p = new Pachube(API_KEY);
 	    update();
     }
@@ -63,6 +68,10 @@ public class PachubetestAndroidArduino extends Activity implements OnClickListen
     @Override
     protected void onResume() {
     	// TODO Retreive saved data
+    	if (p!=null){
+    		p = new Pachube(API_KEY);
+    		update();
+    	}
     	super.onResume();
     }
      @Override
@@ -155,7 +164,7 @@ public class PachubetestAndroidArduino extends Activity implements OnClickListen
 	void updateSeekBar(SeekBar seekBar,TextView textView, int dataStream, ToggleButton toggleButton){
 		try {
 			Feed control_feed = p.getFeed(CONTROL_FEED_ID);	
-			double seekBarValue = (double)Math.round(seekBar.getProgress()*2.55);
+			double seekBarValue = (double)Math.round(seekBar.getProgress());
 			if (seekBar.getProgress()>1){		
 				control_feed.updateDatastream(dataStream, seekBarValue);
 				toggleButton.setVisibility(Button.INVISIBLE);
@@ -164,7 +173,7 @@ public class PachubetestAndroidArduino extends Activity implements OnClickListen
 				toggleButton.setVisibility(Button.VISIBLE);
 				toggleButton.setChecked(false);
 				textView.setText("PWM "+String.valueOf(dataStream)+" Not active: "); 
-				updateDigital(toggleButton,3);	
+				updateDigital(toggleButton,dataStream);	
 			}
 	    } catch (PachubeException ex) {
             System.out.println(ex.errorMessage);
@@ -185,12 +194,16 @@ public class PachubetestAndroidArduino extends Activity implements OnClickListen
 			}
 	    } catch (PachubeException ex) {
 	            System.out.println(ex.errorMessage);
+	            errorMess(ex.errorMessage);
 	    }
 	}
 
 	//Reads values from Arduino
 	void update(){
 		//update if PWM active is missing
+		if (p!=null){
+    		p = new Pachube(API_KEY);
+    	}
 		try {
 	        Feed share_feed = p.getFeed(SHARE_FEED_ID);
 	        EditText text0 = (EditText)findViewById(R.id.editText0);
@@ -222,25 +235,76 @@ public class PachubetestAndroidArduino extends Activity implements OnClickListen
 	        }else{
 	        	((ToggleButton)findViewById(R.id.toggleButton2)).setChecked(false);
 	        }
-	        if (control_feed.getDatastream(3).intValue()==1){
-	        	((ToggleButton)findViewById(R.id.toggleButton3)).setChecked(true);
+	        if (control_feed.getDatastream(3).intValue()>0){ //PWM
+	        	int value = control_feed.getDatastream(3).intValue();
+	        	SeekBar seekBar = ((SeekBar)findViewById(R.id.seekBar1));
+	        	ToggleButton toggleButton = ((ToggleButton)findViewById(R.id.toggleButton3));
+	        	TextView textView = ((TextView)findViewById(R.id.textView1));
+	        	if (value==1){
+	        		toggleButton.setChecked(true);
+	        		seekBar.setProgress(0);
+	        		toggleButton.setVisibility(Button.VISIBLE);
+	        		textView.setText("PWM 3 not Active");
+	        	}
+	        	else{ //OK PWM value
+	        		seekBar.setProgress(value);
+	        		toggleButton.setVisibility(Button.INVISIBLE);
+	        		textView.setText("PWM 3 Value: "+  value);
+	        	}
 	        }else{
 	        	((ToggleButton)findViewById(R.id.toggleButton3)).setChecked(false);
+	        	((SeekBar)findViewById(R.id.seekBar1)).setProgress(0);
+	        	((ToggleButton)findViewById(R.id.toggleButton3)).setVisibility(Button.VISIBLE);
+       		    ((TextView)findViewById(R.id.textView1)).setText("PWM 3 not Active");
 	        }
 	        if (control_feed.getDatastream(4).intValue()==1){
 	        	((ToggleButton)findViewById(R.id.toggleButton4)).setChecked(true);
 	        }else{
 	        	((ToggleButton)findViewById(R.id.toggleButton4)).setChecked(false);
 	        }
-	        if (control_feed.getDatastream(5).intValue()==1){
-	        	((ToggleButton)findViewById(R.id.toggleButton5)).setChecked(true);
+	        if (control_feed.getDatastream(5).intValue()>1){ //PWM
+	        	int value = control_feed.getDatastream(5).intValue();
+	        	SeekBar seekBar = ((SeekBar)findViewById(R.id.seekBar2));
+	        	ToggleButton toggleButton = ((ToggleButton)findViewById(R.id.toggleButton5));
+	        	TextView textView = ((TextView)findViewById(R.id.textView2));
+	        	if (value==1){
+	        		toggleButton.setChecked(true);
+	        		seekBar.setProgress(0);
+	        		toggleButton.setVisibility(Button.VISIBLE);
+	        		textView.setText("PWM 5 not Active");
+	        	}
+	        	else{ //OK PWM value
+	        		seekBar.setProgress(value);
+	        		toggleButton.setVisibility(Button.INVISIBLE);
+	        		textView.setText("PWM 5 Value: "+  value);
+	        	}
 	        }else{
+	        	((SeekBar)findViewById(R.id.seekBar2)).setProgress(0);
 	        	((ToggleButton)findViewById(R.id.toggleButton5)).setChecked(false);
+	        	((ToggleButton)findViewById(R.id.toggleButton5)).setVisibility(Button.INVISIBLE);
+       		    ((TextView)findViewById(R.id.textView2)).setText("PWM 5 not Active");
 	        }
-	        if (control_feed.getDatastream(6).intValue()==1){
-	        	((ToggleButton)findViewById(R.id.toggleButton6)).setChecked(true);
+	        if (control_feed.getDatastream(6).intValue()>0){ //PWM
+	        	int value = control_feed.getDatastream(6).intValue();
+	        	SeekBar seekBar = ((SeekBar)findViewById(R.id.seekBar3));
+	        	ToggleButton toggleButton = ((ToggleButton)findViewById(R.id.toggleButton6));
+	        	TextView textView = ((TextView)findViewById(R.id.textView3));
+	        	if (value==1){
+	        		toggleButton.setChecked(true);
+	        		seekBar.setProgress(0);
+	        		toggleButton.setVisibility(Button.VISIBLE);
+	        		textView.setText("PWM 5 not Active");
+	        	}
+	        	else{ //OK PWM value
+	        		seekBar.setProgress(value);
+	        		toggleButton.setVisibility(Button.INVISIBLE);
+	        		textView.setText("PWM 5 Value: "+  value);
+	        	}
 	        }else{
 	        	((ToggleButton)findViewById(R.id.toggleButton6)).setChecked(false);
+	        	((SeekBar)findViewById(R.id.seekBar3)).setProgress(0);
+	        	((ToggleButton)findViewById(R.id.toggleButton6)).setVisibility(Button.VISIBLE);
+       		    ((TextView)findViewById(R.id.textView3)).setText("PWM 6 not Active");
 	        }
 	        if (control_feed.getDatastream(7).intValue()==1){
 	        	((ToggleButton)findViewById(R.id.toggleButton7)).setChecked(true);
@@ -252,15 +316,37 @@ public class PachubetestAndroidArduino extends Activity implements OnClickListen
 	        }else{
 	        	((ToggleButton)findViewById(R.id.toggleButton8)).setChecked(false);
 	        }
-	        if (control_feed.getDatastream(9).intValue()==1){
-	        	((ToggleButton)findViewById(R.id.toggleButton9)).setChecked(true);
+	        if (control_feed.getDatastream(9).intValue()>0){ //PWM
+	        	int value = control_feed.getDatastream(9).intValue();
+	        	SeekBar seekBar = ((SeekBar)findViewById(R.id.seekBar4));
+	        	ToggleButton toggleButton = ((ToggleButton)findViewById(R.id.toggleButton9));
+	        	TextView textView = ((TextView)findViewById(R.id.textView4));
+	        	if (value==1){
+	        		toggleButton.setChecked(true);
+	        		seekBar.setProgress(0);
+	        		toggleButton.setVisibility(Button.VISIBLE);
+	        		textView.setText("PWM 9 not Active");
+	        	}
+	        	else{ //OK PWM value
+	        		seekBar.setProgress(control_feed.getDatastream(9).intValue());
+	        		toggleButton.setVisibility(Button.INVISIBLE);
+	        		textView.setText("PWM 9 Value: "+  value);
+	        	}
 	        }else{
+	        	((SeekBar)findViewById(R.id.seekBar4)).setProgress(0);
 	        	((ToggleButton)findViewById(R.id.toggleButton9)).setChecked(false);
+	        	((ToggleButton)findViewById(R.id.toggleButton9)).setVisibility(Button.VISIBLE);
+       		    ((TextView)findViewById(R.id.textView4)).setText("PWM 9 not Active");
 	        }	   
 	        Log.i("k3larra","Updated");
 	    } catch (PachubeException ex) {
-	    	Log.i("k3larra","Error in update");
-	            System.out.println(ex.errorMessage);
+	    	Log.i("k3larra","Error in update: "+ ex.errorMessage);
+	    	errorMess( ex.errorMessage);
+	            //System.out.println(ex.errorMessage);
 	    }
+	}
+	
+	void errorMess(String error){
+		((TextView)findViewById(R.id.textView5)).setText(error);
 	}
 }
