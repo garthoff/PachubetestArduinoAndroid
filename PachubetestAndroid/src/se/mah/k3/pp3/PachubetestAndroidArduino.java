@@ -69,7 +69,9 @@ public class PachubetestAndroidArduino extends Activity implements OnClickListen
     protected void onResume() {
     	// TODO Retreive saved data
     	if (p!=null){
+    		
     		p = new Pachube(API_KEY);
+    		
     		update();
     	}
     	super.onResume();
@@ -281,7 +283,7 @@ public class PachubetestAndroidArduino extends Activity implements OnClickListen
 	        }else{
 	        	((SeekBar)findViewById(R.id.seekBar2)).setProgress(0);
 	        	((ToggleButton)findViewById(R.id.toggleButton5)).setChecked(false);
-	        	((ToggleButton)findViewById(R.id.toggleButton5)).setVisibility(Button.INVISIBLE);
+	        	((ToggleButton)findViewById(R.id.toggleButton5)).setVisibility(Button.VISIBLE);
        		    ((TextView)findViewById(R.id.textView2)).setText("PWM 5 not Active");
 	        }
 	        if (control_feed.getDatastream(6).intValue()>0){ //PWM
